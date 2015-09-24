@@ -1,0 +1,129 @@
+Tree
+
+@property int height;
+
+@property NSMutableArray * leafs;
+
+-(void) grow;
+
+-(id) init {
+    self = [super init];
+    if(self){
+		height = 10;
+		_leafs = [[NSMutableArray alloc] init];		
+    }
+    return  self;
+}
+
+-(int) getRandomLeafCount{
+	int leafMin = 10;
+	int leafMax = 20;
+	int leafRandomCount = [this getRandomCountWithMinValue:leafMin withMaxValue:leafMax];
+	return leafRandomCount;
+}
+
+-(int) getRandomCountWithMinValue:(int)min withMaxValue:(int)max{
+	int randomCount = min + arc4random() % (max - min);
+	return randomCount;
+}
+
+-(void) grow{
+	height++;
+	int leafRandomCount = getRandomLeafCount();
+		for(int i = 0; i < leafRandomCount; i++){
+			Leaf * leaf = [[Leaf alloc] init];
+			[_leafs addObject:leaf];
+		}
+}
+
+
+
+
+AppleTree
+
+
+@property NSMutableArray * apples;
+
+-(NSMutableArray *) shake;
+
+
+
+
+-(id) init {
+    self = [super init];
+    if(self){
+        _apples = [[NSMutableArray alloc] init];
+		[this grow];
+		
+    }
+    return  self;
+}
+
+-(int) getRandomAppleCount{
+	int appleMin = 4;
+	int appleMax = 10;
+	int appleRandomCount = [this getRandomCountWithMinValue:appleMin withMaxValue:appleMax];
+	return appleRandomCount;
+}
+
+-(void) grow{
+	height++;
+	int leafRandomCount = getRandomLeafCount();
+		for(int i = 0; i < leafRandomCount; i++){
+			Leaf * leaf = [[Leaf alloc] init];
+			[_leafs addObject:leaf];
+		}
+	
+	int appleRandomCount = getRandomAppleCount();
+		for(int i = 0; i < appleRandomCount; i++){
+			Apple * apple = [[Apple alloc] init];
+			[_apples addObject:apple];
+		}
+		
+}
+
+-(NSMutableArray *) shake{
+	int leafRandomCount = getRandomLeafCount();
+	
+	if(leafRandomCount > [_leafs count]){
+		leafRandomCount = [_leafs count];
+	}
+	if(leafRandomCount > 0){
+		Leaf * leaf;
+		NSMutableArray *discardedLeafs = [[NSMutableArray alloc] init];
+
+		for (leaf in _leafs) {
+			if(leafRandomCount == 0){
+				break;
+			} else {
+				[discardedLeafs addObject:leaf];
+				leafRandomCount--;
+			}
+		}
+
+		[_leafs removeObjectsInArray:discardedLeafs];
+	}
+	
+	
+	int appleRandomCount = getRandomAppleCount();
+	NSMutableArray *discardedApples = [[NSMutableArray alloc] init];
+
+	if(appleRandomCount > [_apples count]){
+		appleRandomCount = [_apples count];
+	}
+	if(appleRandomCount > 0){
+		Apple * apple;
+		for (apple in _apples) {
+			if(appleRandomCount == 0){
+				break;
+			} else {
+				[discardedApples addObject:apple];
+				appleRandomCount--;
+			}
+		}
+
+		[_apples removeObjectsInArray:discardedApples];
+	}
+	
+	return discardedApples;
+}
